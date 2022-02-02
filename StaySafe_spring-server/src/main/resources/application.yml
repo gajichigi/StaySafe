@@ -1,0 +1,34 @@
+gajichigi:
+  mariadb:
+    user: gajichigi
+    password:
+    address:
+    port: 3306
+    database-name:
+
+spring:
+  datasource:
+    driver-class-name: org.mariadb.jdbc.Driver
+    url: jdbc:mariadb://${gajichigi.mariadb.address}:${gajichigi.mariadb.port}/${gajichigi.mariadb.database-name}?characterEncoding=UTF-8&serverTimezome=UTC
+    username: ${gajichigi.mariadb.user}
+    password: ${gajichigi.mariadb.password}
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    properties:
+      hibernate:
+        format_sql: true # To beautify or pretty print the SQL
+        show_sql: true # show sql
+  devtools:
+    livereload:
+      enabled: true
+  freemarker:
+    template-loader-path: /
+    suffix: .ftl
+    cache: false
+
+logging:
+  level:
+    org.hibername:
+      type.descriptor.sql: trace # show parameter binding
+      SQL: DEBUG

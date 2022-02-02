@@ -1,0 +1,89 @@
+plugins {
+	id 'org.springframework.boot' version '2.6.3'
+	id 'io.spring.dependency-management' version '1.0.11.RELEASE'
+	id 'java'
+	id 'jacoco'
+}
+
+group = 'gajichigi'
+version = '0.0.1-SNAPSHOT'
+sourceCompatibility = '1.8'
+
+configurations {
+	compileOnly {
+		extendsFrom annotationProcessor
+	}
+}
+
+repositories {
+	mavenCentral()
+}
+
+dependencies {
+	developmentOnly 'org.springframework.boot:spring-boot-devtools'
+	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+	runtimeOnly 'org.mariadb.jdbc:mariadb-java-client'
+	implementation 'org.springframework.boot:spring-boot-starter-web'
+	compileOnly 'org.projectlombok:lombok'
+	annotationProcessor 'org.projectlombok:lombok'
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+}
+
+tasks.named('test') {
+	useJUnitPlatform()
+	// test task 실행시 JaCoCo task 실행되도록 설정
+	finalizedBy jacocoTestReport
+}
+
+jacoco {
+	// JaCoCo 버전
+	toolVersion = '0.8.7'
+}
+
+jacocoTestReport {
+	dependsOn test
+	reports {
+		// 원하는 리포트를 켜고 끌 수 있다.
+		html.enabled true
+		xml.enabled true
+		csv.enabled true
+
+		html.destination file("src/jacoco/jacoco.html")
+		xml.destination file("src/jacoco/jacoco.xml")
+	}
+	// test task 실행시 JaCoCo task 실행되도록 설정
+	finalizedBy 'jacocoTestCoverageVerification'
+}
+
+jacocoTestCoverageVerification {
+	violationRules {
+		rule {
+			// 룰을 켜고 끌 수 있다.
+			enabled = false
+
+			// 룰을 체크할 단위는 클래스 단위
+			element = 'CLASS'
+
+			// 브랜치 커버리지 기준 90 % 이상 => 60 % 이상
+			limit {
+				counter = 'BRANCH'
+				value = 'COVEREDRATIO'
+				minimum = 0.60
+			}
+
+			// 라인 커버리지 기준 80 % 이상
+			limit {
+				counter = 'LINE'
+				value = 'COVEREDRATIO'
+				minimum = 0.60
+			}
+
+			// 메소드 커버리지 기준 80 % 이상
+			limit {
+				counter = 'METHOD'
+				value = 'COVEREDRATIO'
+				minimum = 0.60
+			}
+		}
+	}
+}
